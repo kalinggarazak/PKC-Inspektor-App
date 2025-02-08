@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PKC Survey Calculator APP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <h1>PKC Survey Calculator APP</h1>
+
+    <!-- step1 -->
+    <form id="inspeksiForm">
+        <label for="jarak">Masukkan Jarak (Pulang Pergi):</label>
+        <input type="number" id="jarak" name="jarak" required><br><br>
+
+        <label for="jumlahInspektor">Jumlah Inspektor (non helper/driver):</label>
+        <input type="number" id="jumlahInspektor" name="jumlahInspektor" required><br><br>
+
+        <label for="tglBerangkat">Tanggal Berangkat:</label>
+        <input type="date" id="tglBerangkat" name="tglBerangkat" required><br><br>    
+        
+        <label for="namaPerusahaan">Nama Perusahaan:</label>
+        <input type="text" id="namaPerusahaan" name="namaPerusahaan" required><br><br>    
+
+
+        <label for="jenisSertifikasi">Jenis Sertifikasi:</label>
+        <select id="jenisSertifikasi" name="jenisSertifikasi">            
+            <option value="Sertifikasi">Sertifikasi</option>
+            <option value="Re-Sertifikasi">Re-Sertifikasi</option>
+        </select><br><br>
+        
+        <label for="jenisPerusahaan">Jenis Perusahaan:</label>
+        <select id="jenisPerusahaan" name="jenisPerusahaan">
+            
+            <option value="Kebun">Kebun</option>
+            <option value="Pabrik">Pabrik</option>
+        </select><br><br>
+
+        <label for="jenisPekerjaan">Jenis Pekerjaan:</label>
+        <select id="jenisPekerjaan" name="jenisPekerjaan" onchange="tampilkanPilihanAlat()">
+            <option value=""></option>
+            <option value="Migas">Migas</option>
+            <option value="Industri">Industri</option>
+            <!-- <option value="Marine">Marine</option> -->
+            <option value="SLO">SLO</option>
+        </select><br><br>
+
+        <div id="pilihanAlat" style="display:none;">
+            </div>
+
+        <button type="submit">PROSES</button>
+        
+    </form>
+
+    <!-- step2 -->
+    <h2>Hasil Perhitungan</h2>
+    <table id="tabelHasil">
+        <thead>
+            <tr>
+                <th>Jarak</th>
+                <th>Jumlah Inspektor</th>
+                <!-- <th>Nama Alat</th> -->
+                <th>Nama Perusahaan</th>
+                <th>Jenis Sertifikasi</th>
+                <th>Jenis Perusahaan</th>
+                <th>Jenis Pekerjaan</th>
+                <th>Pilihan Alat</th>
+                <th>Jumlah Unit</th>
+                <th>Tanggal Berangkat</th>
+                <th>Tanggal Pulang</th>
+                <th>Durasi Mob Demob (Tambahan)</th>
+                <th>Durasi Pengerjaan (Hari)</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    
+
+    <script src="script.js"></script>
+</body>
+</html>

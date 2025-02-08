@@ -1,0 +1,78 @@
+/* style.css */
+  
+button[type="submit"] {
+    font-size: 16px;
+    padding: 10px 20px;
+    background-color: blue;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+ 
+  
+  #inspeksiForm label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: -5px;
+    width: auto;
+    
+  }
+  
+  #inspeksiForm input,
+  #inspeksiForm select {
+    width: 20%;
+    margin-bottom: 10px;
+    margin-left: 0%;
+  }
+  
+  #inspeksiForm div {
+    display: flex;
+    align-items: left;
+  }
+  
+  /* #inspeksiForm label {
+    width: 150px;
+    text-align: left;
+    margin-right: 10px;
+  } */
+
+  /* #pilihanAlat div {
+    display: flex;
+    align-items: center;
+  } */
+
+  #pilihanAlat label {
+    margin-top: 0px;
+    width: auto;
+    margin-right: 20px; /* Atur margin kanan label sesuai kebutuhan */
+    margin-left: -20px; 
+  } 
+  #pilihanAlat input[type="checkbox"] {
+    margin-right:-10px; /* Atur margin kanan checkbox sesuai kebutuhan */
+    margin-left: 10px; /* Atur margin kanan checkbox sesuai kebutuhan */
+  }
+  #pilihanAlat input[type="number"] {
+    margin-right:1px; /* Atur margin kanan checkbox sesuai kebutuhan */
+    margin-left: 0px; /* Atur margin kanan checkbox sesuai kebutuhan */
+  }
+
+  #tabelHasil {
+    margin-bottom: 100px; /* Atur nilai margin bawah sesuai kebutuhan */
+  }
+  #tanggalPulang {
+    margin-bottom: 100px; /* Atur nilai margin bawah sesuai kebutuhan */
+  }
+
+  #tabelHasil {
+    border-collapse: collapse; /* Menggabungkan border sel menjadi satu */
+    width: 100%; /* Optional: Menentukan lebar tabel */
+  }
+  
+  #tabelHasil td, #tabelHasil th {
+    border: 1px solid black; /* Memberikan border pada setiap sel */
+    padding: 8px; /* Optional: Menambahkan padding pada sel */
+  }
+
+
