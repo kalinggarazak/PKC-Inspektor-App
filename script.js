@@ -1,202 +1,83 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const inspeksiForm = document.getElementById('inspeksiForm');
     const tabelHasil = document.getElementById('tabelHasil').getElementsByTagName('tbody')[0];
-    let dataInspeksi = [];
+    let dataInspeksi =[];
 
-    
-
-    inspeksiForm.addEventListener('submit', function(event) {
+    inspeksiForm.addEventListener('submit', function (event) {
         event.preventDefault();
 
-        // step 3
-        const jarak = document.getElementById('jarak').value;
-        const jumlahInspektor = document.getElementById('jumlahInspektor').value;
+        const jarak = parseFloat(document.getElementById('jarak').value); // Ubah ke angka
+        const jumlahInspektor = parseInt(document.getElementById('jumlahInspektor').value); // Ubah ke angka
         const jenisSertifikasi = document.getElementById('jenisSertifikasi').value;
         const inputtglBerangkat = document.getElementById('tglBerangkat').value;
         const namaPerusahaan = document.getElementById('namaPerusahaan').value;
         const jenisPerusahaan = document.getElementById('jenisPerusahaan').value;
         const jenisPekerjaan = document.getElementById('jenisPekerjaan').value;
         const pilihanAlat = Array.from(document.querySelectorAll('#pilihanAlat input[type="checkbox"]:checked'))
-            .map(checkbox => checkbox.value);
+          .map(checkbox => checkbox.value);
         const jumlahUnit = Array.from(document.querySelectorAll('#pilihanAlat input[type="number"]'))
-            .map(input => input.value);
+          .map(input => parseInt(input.value)); // Ubah ke angka
 
-            const tglBerangkat = new Date(inputtglBerangkat); // Tanggal hari ini sebagai default
-            const x = jarak / 300;
-            let tambahanHari = Math.floor(x - 0.50); // Hitung tambahan hari
-            // Kondisi tambahan untuk jarak 300 atau lebih besar
-            if (jarak >= 300) {
-                tambahanHari = Math.ceil(x - 0.50); // Pembulatan ke atas jika x >= 1
+        const tglBerangkat = new Date(inputtglBerangkat);
+        const x = jarak / 300;
+        let tambahanHari = Math.floor(x - 0.50);
+        if (jarak >= 300) {
+            tambahanHari = Math.ceil(x - 0.50);
+        }
+        if (tambahanHari <= 0) {
+            tambahanHari = 0;
+        }
+
+        let durasiTambahan = 0;
+
+        function hitungDurasi(alat, durasiPerUnit) {
+            const indexAlat = pilihanAlat.indexOf(alat);
+            if (indexAlat!== -1) {
+                let durasiAlat = jumlahUnit[indexAlat] * durasiPerUnit;
+                durasiTambahan += Math.ceil(durasiAlat); // Bulatkan ke atas untuk setiap alat
             }
-            
-            if (tambahanHari <= 0) {
-                tambahanHari = 0; // Minimal 0 hari
-            }
+        }
 
+        // Perhitungan durasi sesuai ketentuan
+        hitungDurasi('Boiler', 2);
+        hitungDurasi('Crane Mobile', 2);
+        hitungDurasi('Kalibrasi Tangki', 1);
+        hitungDurasi('Genset', 2);
+        hitungDurasi('PSV', 1 / 4); // 1 hari / 4 unit
+        hitungDurasi('Alat Tangki', 2); // 2 hari / 1 unit
+        hitungDurasi('Alat Vessel', 1 / 7); // 1 hari / 7 unit
+        hitungDurasi('Lainnya (Pabrik - Industri)', 1 / 13); // 1 hari / 13 unit
+        hitungDurasi('Lainnya (Kebun - Industri)', 1 / 7); // 1 hari / 7 unit
 
-            // if (tambahanHari < 0) tambahanHari = 0; // Minimal 0 hari
+        if (jumlahInspektor > 1) {
+            durasiTambahan = Math.ceil(durasiTambahan / jumlahInspektor); // Bagi durasi dan bulatkan ke atas
+        }
 
+        const tglPulang = new Date(tglBerangkat);
+        
+        tglPulang.setDate(tglBerangkat.getDate() + tambahanHari + durasiTambahan);
 
-            // // Hitung durasi tambahan
-            let durasiTambahan = 0;
-            let durasiAlat_pabrik = 0;
-            let durasiAlat_kebun = 0;
-            let durasiAlat_vessel = 0;
-            let durasiAlat_psv = 0;
-            function hitungDurasi(alat, durasiPerUnit) {
-                const indexAlat = pilihanAlat.indexOf(alat);
-            
-                if (indexAlat !== -1) {
-                    let durasiAlat = jumlahUnit[indexAlat] * durasiPerUnit;
-                // --- Kondisi Khusus untuk Alat "K1" (dengan Modulo) ---
-                    if (alat === "Lainnya (Pabrik - Industri)") {
-                        const jumlahAlatK1 = jumlahUnit[indexAlat];
-                        let tambahanWaktuK1 = 0;
-
-                        // Hitung kelipatan 13
-                        const kelipatan = Math.ceil((jumlahAlatK1) % 13);
-                        console.log(kelipatan);
-
-                        // Tambahan waktu berdasarkan kelipatan (dikurangi 1)
-                        // if(kelipatan > 0) {
-                        //     tambahanWaktuK1 = kelipatan;
-                        // }
-                       
-                        durasiAlat_pabrik += kelipatan; // Tambahkan ke durasi
-                        console.log("Durasi lainnya (pabrik):" +durasiAlat_pabrik);
-                    }else if (alat === "Lainnya (Kebun - Industri)") {
-                        const jumlahAlatK1 = jumlahUnit[indexAlat];
-                        let tambahanWaktuK1 = 0;
-
-                        // Hitung kelipatan 13
-                        const kelipatan2 = Math.ceil((jumlahAlatK1) % 7);
-                        console.log(kelipatan2);
-
-                        // Tambahan waktu berdasarkan kelipatan (dikurangi 1)
-                        // if(kelipatan > 0) {
-                        //     tambahanWaktuK1 = kelipatan;
-                        // }
-                       
-                        durasiAlat_kebun += kelipatan2; // Tambahkan ke durasi
-                        console.log("Durasi lainnya (kebun):" +durasiAlat_kebun);
-                    
-                    }else if (alat === "Alat Vessel") {
-                        const jumlahAlatK1 = jumlahUnit[indexAlat];
-                        let tambahanWaktuK1 = 0;
-
-                        // Hitung kelipatan 13
-                        const kelipatan3 = Math.ceil((jumlahAlatK1) % 7);
-                        console.log(kelipatan3);
-
-                        // Tambahan waktu berdasarkan kelipatan (dikurangi 1)
-                        // if(kelipatan > 0) {
-                        //     tambahanWaktuK1 = kelipatan;
-                        // }
-                       
-                        durasiAlat_vessel += kelipatan3; // Tambahkan ke durasi
-                        console.log("Durasi Vessel :" +durasiAlat_vessel);
-                    
-                    }else if (alat === "PSV") {
-                        const jumlahAlatK1 = jumlahUnit[indexAlat];
-                        let tambahanWaktuK1 = 0;
-
-                        // Hitung kelipatan 13
-                        const kelipatan4 = Math.ceil((jumlahAlatK1) % 4);
-                        console.log(kelipatan4);
-
-                        // Tambahan waktu berdasarkan kelipatan (dikurangi 1)
-                        // if(kelipatan > 0) {
-                        //     tambahanWaktuK1 = kelipatan;
-                        // }
-                       
-                        durasiAlat_psv += kelipatan4; // Tambahkan ke durasi
-                        console.log("Durasi PSV :" +durasiAlat_psv);
-                    }
-                    durasiTambahan += durasiAlat+durasiAlat_pabrik+durasiAlat_kebun+durasiAlat_vessel+durasiAlat_psv;
-                    console.log("durasi Tambahan Total "+durasiTambahan);
-                }
-                    
-            }
-
-            // Hitung durasi untuk setiap jenis alat
-            hitungDurasi('Boiler', 2);       // Boiler: 2 hari per unit
-            hitungDurasi('Crane Mobile', 2); // Crane Mobile: 2 hari per unit
-            hitungDurasi('Kalibrasi Tangki', 1); // Kalibrasi Tangki: 1 hari per unit
-            hitungDurasi('Lainnya (Pabrik - Industri)', 0.0769230769230769);      // Lainnya: 0,0769230769230769 hari per unit
-            hitungDurasi('Lainnya (Kebun - Industri)', 0.1428571428571429);      // Lainnya: 0,0769230769230769 hari per unit
-            
-            //slo
-            hitungDurasi('Genset (Kebun)', 2);    
-            hitungDurasi('Genset (pabrik)', 2);    
-
-            //migas
-            hitungDurasi('Alat Tangki', 2);  
-            hitungDurasi('PSV', 0.25);   
-            hitungDurasi('Alat Vessel', 0.1428571428571429); 
-            
-            const tglPulang = new Date(tglBerangkat);
-            
-            if(jumlahInspektor<=1){
-                durasiTambahan = (durasiTambahan-1);
-                tglPulang.setDate(tglBerangkat.getDate() + tambahanHari + durasiTambahan);
-                dataInspeksi.push({
-                    jarak: jarak,
+        dataInspeksi.push({
+            jarak: jarak,
                     jumlahInspektor: jumlahInspektor,
                     namaPerusahaan: namaPerusahaan,
                     jenisSertifikasi: jenisSertifikasi,
+                    // jumlahHelper: jumlahHelper,
                     jenisPerusahaan: jenisPerusahaan,
                     jenisPekerjaan: jenisPekerjaan,
                     pilihanAlat: pilihanAlat,
                     jumlahUnit: jumlahUnit,
-                    tglBerangkat: tglBerangkat.toLocaleDateString(),
-                    tglPulang: tglPulang.toLocaleDateString(),
-                    tambahanHari: tambahanHari,
-                    durasiTambahan: Math.round(durasiTambahan)+1
-                });
-            }else if(jumlahInspektor>1){
-                durasiTambahan = (durasiTambahan - 1) - ((durasiTambahan - 1) / jumlahInspektor);
-                // tglPulang.setDate(tglBerangkat.getDate() + tambahanHari + ((durasiTambahan-1)-((durasiTambahan-1)/jumlahInspektor)));
-                tglPulang.setDate(tglBerangkat.getDate() + tambahanHari + durasiTambahan);
-                dataInspeksi.push({
-                    jarak: jarak,
-                    jumlahInspektor: jumlahInspektor,
-                    namaPerusahaan: namaPerusahaan,
-                    jenisSertifikasi: jenisSertifikasi,
-                    jenisPerusahaan: jenisPerusahaan,
-                    jenisPekerjaan: jenisPekerjaan,
-                    pilihanAlat: pilihanAlat,
-                    jumlahUnit: jumlahUnit,
-                    tglBerangkat: tglBerangkat.toLocaleDateString(),
-                    tglPulang: tglPulang.toLocaleDateString(),
-                    tambahanHari: tambahanHari,
-                    durasiTambahan: Math.round(durasiTambahan)
-                });
-            }
-            
-            //step 4
-
-        // dataInspeksi.push({
-        //     jarak: jarak,
-        //     jumlahInspektor: jumlahInspektor,
-        //     namaPerusahaan: namaPerusahaan,
-        //     jenisSertifikasi: jenisSertifikasi,
-        //     jumlahHelper: jumlahHelper,
-        //     jenisPerusahaan: jenisPerusahaan,
-        //     jenisPekerjaan: jenisPekerjaan,
-        //     pilihanAlat: pilihanAlat,
-        //     jumlahUnit: jumlahUnit,
-        //     tglBerangkat: tglBerangkat.toLocaleDateString(),
-        //     tglPulang: tglPulang.toLocaleDateString(),
-        //     tambahanHari: tambahanHari,
-        //     durasiTambahan: Math.round(durasiTambahan)+1
-        // });
+            tglBerangkat: tglBerangkat.toLocaleDateString(),
+            tglPulang: tglPulang.toLocaleDateString(),
+            tambahanHari: tambahanHari,
+            durasiTambahan: Math.round(durasiTambahan) // Bulatkan durasi total
+        });
 
         tampilkanData();
         inspeksiForm.reset();
-        resetPilihanAlat(); // Reset pilihan alat dan input jumlah unit
+        resetPilihanAlat();
     });
 
-   
     function tampilkanData() {
         tabelHasil.innerHTML = '';        
         // step 5
@@ -204,6 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const row = tabelHasil.insertRow();
             const cell1 = row.insertCell();
             const cell2 = row.insertCell();
+            // const cell3 = row.insertCell(); // Tambahkan cell baru untuk jumlahHelper
             const cell4 = row.insertCell(); // Tambahkan cell baru untuk namaPerusahaan
             const cell5 = row.insertCell(); // Tambahkan cell baru untuk jenisSertifikasi
             const cell6 = row.insertCell();
@@ -219,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // step 6
             cell1.textContent = item.jarak;
             cell2.textContent = item.jumlahInspektor;
+            // cell3.textContent = item.jumlahHelper;
             cell4.textContent = item.namaPerusahaan;
             cell5.textContent = item.jenisSertifikasi
             cell6.textContent = item.jenisPerusahaan;
@@ -242,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
             pilihanAlatDiv.innerHTML = ''; // Kosongkan pilihan alat sebelumnya
             pilihanAlatDiv.style.display = 'none'; // Sembunyikan sampai ada pilihan
 
-            if (jenisPerusahaan === 'Pabrik') {
+            
                 if (jenisPekerjaan === 'Migas') {
                     const migasOptions = ['PSV', 'Alat Tangki', 'Alat Vessel'];
                     migasOptions.forEach(option => {
@@ -266,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     pilihanAlatDiv.style.display = 'block';
                 } else if (jenisPekerjaan === 'Industri') {
-                    const industriOptions = ['Boiler', 'Crane Mobile', 'Kalibrasi Tangki','Lainnya (Pabrik - Industri)'];
+                    const industriOptions = ['Boiler', 'Crane Mobile', 'Kalibrasi Tangki','Lainnya (Pabrik - Industri)','Lainnya (Kebun - Industri)'];
                     industriOptions.forEach(option => {
                         const div = document.createElement('div');
             
@@ -288,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
                     pilihanAlatDiv.style.display = 'block';
                 }  else if (jenisPekerjaan === 'SLO') {
-                    const gensetOptions = ['Genset (pabrik)'];
+                    const gensetOptions = ['Genset'];
                     gensetOptions.forEach(option => {
                         const div = document.createElement('div');
             
@@ -331,55 +214,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
             
                     pilihanAlatDiv.style.display = 'block';// Tambahkan pilihan alat marine di sini jika diperlukan
-                }
-            } else if (jenisPerusahaan === 'Kebun'){
-                if (jenisPekerjaan === 'Industri') {
-                    const industriOptions = ['Boiler', 'Crane Mobile', 'Kalibrasi Tangki','Lainnya (Kebun - Industri)'];
-                    industriOptions.forEach(option => {
-                        const div = document.createElement('div');
-            
-                        const checkbox = document.createElement('input');
-                        checkbox.type = 'checkbox';
-                        checkbox.id = option;
-                        checkbox.name = 'pilihanAlat';
-                        checkbox.value = option;
-                        checkbox.addEventListener('change', tampilkanInputJumlahUnit);
-            
-                        const label = document.createElement('label');
-                        label.htmlFor = option;
-                        label.textContent = option;
-            
-                        div.appendChild(checkbox);
-                        div.appendChild(label);
-                        pilihanAlatDiv.appendChild(div);
-                    });
-            
-                    pilihanAlatDiv.style.display = 'block';
-                }  else if (jenisPekerjaan === 'SLO') {
-                    const gensetOptions = ['Genset (Kebun)'];
-                    gensetOptions.forEach(option => {
-                        const div = document.createElement('div');
-                        const checkbox = document.createElement('input');
-                        checkbox.type = 'checkbox';
-                        checkbox.id = option;
-                        checkbox.name = 'pilihanAlat';
-                        checkbox.value = option;
-                        checkbox.addEventListener('change', tampilkanInputJumlahUnit);
-            
-                        const label = document.createElement('label');
-                        label.htmlFor = option;
-                        label.textContent = option;
-            
-                        div.appendChild(checkbox);
-                        div.appendChild(label);
-                        pilihanAlatDiv.appendChild(div);
-                    });
-            
-                    pilihanAlatDiv.style.display = 'block';
-                } 
-            }   
+                }   
         }
-        
+
     function tampilkanInputJumlahUnit() {
         const pilihanAlatDiv = document.getElementById('pilihanAlat');
         const checkedCheckboxes = pilihanAlatDiv.querySelectorAll('input[type="checkbox"]:checked');
@@ -415,4 +252,5 @@ document.addEventListener('DOMContentLoaded', function() {
         pilihanAlatDiv.style.display = 'none';
         pilihanAlatDiv.innerHTML = '';
     }
+    
 });
