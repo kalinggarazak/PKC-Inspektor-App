@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const tglPulang = new Date(tglBerangkat);
         
-        tglPulang.setDate(tglBerangkat.getDate() + tambahanHari + durasiTambahan);
+        tglPulang.setDate(tglBerangkat.getDate() + tambahanHari + (durasiTambahan-1));
 
         dataInspeksi.push({
             jarak: jarak,
