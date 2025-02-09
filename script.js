@@ -8,10 +8,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const jarak = parseFloat(document.getElementById('jarak').value); // Ubah ke angka
         const jumlahInspektor = parseInt(document.getElementById('jumlahInspektor').value); // Ubah ke angka
-        const jenisSertifikasi = document.getElementById('jenisSertifikasi').value;
+        // const jenisSertifikasi = document.getElementById('jenisSertifikasi').value;
         const inputtglBerangkat = document.getElementById('tglBerangkat').value;
         const namaPerusahaan = document.getElementById('namaPerusahaan').value;
-        const jenisPerusahaan = document.getElementById('jenisPerusahaan').value;
+        // const jenisPerusahaan = document.getElementById('jenisPerusahaan').value;
         const jenisPekerjaan = document.getElementById('jenisPekerjaan').value;
         const pilihanAlat = Array.from(document.querySelectorAll('#pilihanAlat input[type="checkbox"]:checked'))
           .map(checkbox => checkbox.value);
@@ -29,12 +29,51 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         let durasiTambahan = 0;
-
         function hitungDurasi(alat, durasiPerUnit) {
             const indexAlat = pilihanAlat.indexOf(alat);
             if (indexAlat!== -1) {
-                let durasiAlat = jumlahUnit[indexAlat] * durasiPerUnit;
-                durasiTambahan += Math.ceil(durasiAlat); // Bulatkan ke atas untuk setiap alat
+                let durasiAlat = 0;
+                if (alat === "Lainnya (Pabrik - Industri)") {
+                    let jumlahUnitPabrik = jumlahUnit[indexAlat];
+                    
+                    if (jumlahUnitPabrik >= 0 && jumlahUnitPabrik < 13) {
+                        jumlahUnitPabrik = 13;
+                    }
+                    const x = jumlahUnitPabrik * 0.0769230769;
+                    durasiAlat += Math.ceil(x - 0.50);
+         
+                }if (alat === "Lainnya (Kebun - Industri)") {
+                    let jumlahUnitKebun = jumlahUnit[indexAlat];
+                    
+                    if (jumlahUnitKebun >= 0 && jumlahUnitKebun < 7) {
+                        jumlahUnitKebun = 7;
+                    }
+                    const x = jumlahUnitKebun * 0.14285714285;
+                    durasiAlat = Math.ceil(x - 0.50);
+                } 
+                if (alat === "Alat Vessel") {
+                    let jumlahAlatVessel = jumlahUnit[indexAlat];
+                    
+                    if (jumlahAlatVessel >= 0 && jumlahUnitKebun < 7) {
+                        jumlahAlatVessel = 7;
+                    }
+                    const x = jumlahAlatVessel * 0.14285714285;
+                    durasiAlat = Math.ceil(x - 0.50);
+                } 
+                if (alat === "PSV") {
+                    let jumlahPSV = jumlahUnit[indexAlat];
+                    
+                    if (jumlahPSV >= 0 && jumlahPSV < 4) {
+                        jumlahPSV = 4;
+                    }
+
+                    const x = jumlahPSV * 0.25;
+                    durasiAlat = Math.ceil(x - 0.50);
+                }
+                if (alat!== "Lainnya (Pabrik - Industri)" && alat!== "Lainnya (Kebun - Industri)" && alat!== "Alat Vessel" && alat!== "PSV") {
+                    durasiAlat = jumlahUnit[indexAlat] * durasiPerUnit;
+                }
+                durasiTambahan += durasiAlat; // Bulatkan ke atas untuk setiap alat
             }
         }
 
@@ -43,27 +82,25 @@ document.addEventListener('DOMContentLoaded', function () {
         hitungDurasi('Crane Mobile', 2);
         hitungDurasi('Kalibrasi Tangki', 1);
         hitungDurasi('Genset', 2);
-        hitungDurasi('PSV', 1 / 4); // 1 hari / 4 unit
+        hitungDurasi('PSV', 1 / 4); // 1 hari / 4 unit 0.25
         hitungDurasi('Alat Tangki', 2); // 2 hari / 1 unit
-        hitungDurasi('Alat Vessel', 1 / 7); // 1 hari / 7 unit
+        hitungDurasi('Alat Vessel', 1 / 7); // 1 hari / 7 unit 0.14285714285
         hitungDurasi('Lainnya (Pabrik - Industri)', 1 / 13); // 1 hari / 13 unit
         hitungDurasi('Lainnya (Kebun - Industri)', 1 / 7); // 1 hari / 7 unit
 
         if (jumlahInspektor > 1) {
             durasiTambahan = Math.ceil(durasiTambahan / jumlahInspektor); // Bagi durasi dan bulatkan ke atas
         }
-
-        const tglPulang = new Date(tglBerangkat);
         
+        const tglPulang = new Date(tglBerangkat);
         tglPulang.setDate(tglBerangkat.getDate() + tambahanHari + (durasiTambahan-1));
 
         dataInspeksi.push({
             jarak: jarak,
                     jumlahInspektor: jumlahInspektor,
                     namaPerusahaan: namaPerusahaan,
-                    jenisSertifikasi: jenisSertifikasi,
-                    // jumlahHelper: jumlahHelper,
-                    jenisPerusahaan: jenisPerusahaan,
+                    // jenisSertifikasi: jenisSertifikasi,
+                    // jenisPerusahaan: jenisPerusahaan,
                     jenisPekerjaan: jenisPekerjaan,
                     pilihanAlat: pilihanAlat,
                     jumlahUnit: jumlahUnit,
@@ -85,10 +122,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const row = tabelHasil.insertRow();
             const cell1 = row.insertCell();
             const cell2 = row.insertCell();
-            // const cell3 = row.insertCell(); // Tambahkan cell baru untuk jumlahHelper
             const cell4 = row.insertCell(); // Tambahkan cell baru untuk namaPerusahaan
-            const cell5 = row.insertCell(); // Tambahkan cell baru untuk jenisSertifikasi
-            const cell6 = row.insertCell();
+            // const cell5 = row.insertCell(); // Tambahkan cell baru untuk jenisSertifikasi
+            // const cell6 = row.insertCell();
             const cell7 = row.insertCell();
             const cell8 = row.insertCell();
             const cell9 = row.insertCell();
@@ -101,10 +137,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // step 6
             cell1.textContent = item.jarak;
             cell2.textContent = item.jumlahInspektor;
-            // cell3.textContent = item.jumlahHelper;
             cell4.textContent = item.namaPerusahaan;
-            cell5.textContent = item.jenisSertifikasi
-            cell6.textContent = item.jenisPerusahaan;
+            // cell5.textContent = item.jenisSertifikasi
+            // cell6.textContent = item.jenisPerusahaan;
             cell7.textContent = item.jenisPekerjaan;
             cell8.textContent = item.pilihanAlat.join(', '); // Menampilkan pilihan alat sebagai string
             cell9.textContent = item.jumlahUnit.join(', '); // Menampilkan jumlah unit sebagai string
@@ -119,13 +154,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         window.tampilkanPilihanAlat = function() {
             
-            const jenisPerusahaan = document.getElementById('jenisPerusahaan').value;
+            // const jenisPerusahaan = document.getElementById('jenisPerusahaan').value;
             const jenisPekerjaan = document.getElementById('jenisPekerjaan').value;
             const pilihanAlatDiv = document.getElementById('pilihanAlat');
             pilihanAlatDiv.innerHTML = ''; // Kosongkan pilihan alat sebelumnya
             pilihanAlatDiv.style.display = 'none'; // Sembunyikan sampai ada pilihan
 
-            
+           
                 if (jenisPekerjaan === 'Migas') {
                     const migasOptions = ['PSV', 'Alat Tangki', 'Alat Vessel'];
                     migasOptions.forEach(option => {
