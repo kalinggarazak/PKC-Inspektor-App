@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (alat === "Alat Vessel") {
                     let jumlahAlatVessel = jumlahUnit[indexAlat];
                     
-                    if (jumlahAlatVessel >= 0 && jumlahUnitKebun < 7) {
+                    if (jumlahAlatVessel >= 0 && jumlahAlatVessel < 7) {
                         jumlahAlatVessel = 7;
                     }
                     const x = jumlahAlatVessel * 0.14285714285;
