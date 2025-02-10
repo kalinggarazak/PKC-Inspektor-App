@@ -82,6 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
         hitungDurasi('Crane Mobile', 2);
         hitungDurasi('Kalibrasi Tangki', 1);
         hitungDurasi('Genset', 2);
+        hitungDurasi('Lainnya (Migas)', 1);
         hitungDurasi('PSV', 1 / 4); // 1 hari / 4 unit 0.25
         hitungDurasi('Alat Tangki', 2); // 2 hari / 1 unit
         hitungDurasi('Alat Vessel', 1 / 7); // 1 hari / 7 unit 0.14285714285
@@ -162,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
            
                 if (jenisPekerjaan === 'Migas') {
-                    const migasOptions = ['PSV', 'Alat Tangki', 'Alat Vessel'];
+                    const migasOptions = ['PSV', 'Alat Tangki', 'Alat Vessel','Lainnya (Migas)'];
                     migasOptions.forEach(option => {
                         const div = document.createElement('div'); // Bungkus checkbox dan input dalam div
 
@@ -274,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
             jumlahUnitInput.type = 'number';
             jumlahUnitInput.name = 'jumlahUnit';
             jumlahUnitInput.placeholder = 'Jumlah Unit';
-            jumlahUnitInput.value = 0;  
+            jumlahUnitInput.value = 0;
             parentDiv.appendChild(jumlahUnitInput);
           }
       
