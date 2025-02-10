@@ -274,6 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
             jumlahUnitInput.type = 'number';
             jumlahUnitInput.name = 'jumlahUnit';
             jumlahUnitInput.placeholder = 'Jumlah Unit';
+            jumlahUnitInput.value = 0;  
             parentDiv.appendChild(jumlahUnitInput);
           }
       
